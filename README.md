@@ -17,3 +17,15 @@ La app TaskFlow está dividida en estas secciones principales:
 El wireframe del diseño está disponible en `docs/design/`.
 
 > https://taskflow-project-steel.vercel.app
+
+## Testing manual
+
+| Prueba | Resultado |
+|---|---|
+| App con lista vacía | ✅ Muestra estado vacío correctamente |
+| Añadir tarea sin título | ✅ Muestra error de validación |
+| Tarea con título muy largo | ✅ Se muestra correctamente |
+| Marcar varias tareas completadas | ✅ Actualiza estadísticas en tiempo real |
+| Eliminar varias tareas | ✅ Animación y eliminación correcta |
+| Recargar la página | ✅ Los datos persisten en localStorage |
+| Navegación por teclado | ✅ Tab, Enter y Escape funcionan |
