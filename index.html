@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TaskFlow — Gestiona tu flujo</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-mark">⬡</span>
+        <h1>Task<span>Flow</span></h1>
+      </div>
+      <div class="header-actions">
+        <button id="btn-dark-mode" aria-label="Activar modo oscuro" title="Cambiar tema">
+          <span class="icon-sun">☀</span>
+          <span class="icon-moon">☽</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-main">
+
+    <!-- FORMULARIO -->
+    <section class="form-section" aria-label="Añadir nueva tarea">
+      <form id="task-form" novalidate>
+        <div class="form-row">
+          <div class="input-wrap">
+            <label for="task-input">Nueva tarea</label>
+            <input
+              type="text"
+              id="task-input"
+              name="task-title"
+              placeholder="Escribe una tarea..."
+              autocomplete="off"
+              maxlength="200"
+              aria-required="true"
+            />
+          </div>
+          <div class="input-wrap input-wrap--select">
+            <label for="task-priority">Prioridad</label>
+            <select id="task-priority" name="task-priority">
+              <option value="normal">Normal</option>
+              <option value="alta">Alta ↑</option>
+              <option value="baja">Baja ↓</option>
+            </select>
+          </div>
+          <button type="submit" id="btn-add" aria-label="Añadir tarea">
+            <span>+ Añadir</span>
+          </button>
+        </div>
+        <p class="form-error" id="form-error" role="alert" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <!-- CONTROLES DE FILTRO Y BÚSQUEDA -->
+    <section class="controls-section" aria-label="Filtros y búsqueda">
+      <div class="search-wrap">
+        <label for="search-input" class="sr-only">Buscar tareas</label>
+        <input
+          type="search"
+          id="search-input"
+          placeholder="🔍 Buscar tareas..."
+          aria-label="Buscar tareas"
+        />
+      </div>
+      <div class="filters" role="group" aria-label="Filtrar tareas">
+        <button class="filter-btn active" data-filter="todas" aria-pressed="true">Todas</button>
+        <button class="filter-btn" data-filter="pendientes" aria-pressed="false">Pendientes</button>
+        <button class="filter-btn" data-filter="completadas" aria-pressed="false">Completadas</button>
+      </div>
+    </section>
+
+    <div class="content-grid">
+
+      <!-- LISTA DE TAREAS -->
+      <section class="tasks-section" aria-label="Lista de tareas">
+        <div class="tasks-header">
+          <h2>Tareas <span id="task-count" aria-live="polite">0</span></h2>
+          <div class="bulk-actions">
+            <button id="btn-complete-all" aria-label="Marcar todas como completadas" title="Completar todas">✓ Todas</button>
+            <button id="btn-clear-completed" aria-label="Borrar tareas completadas" title="Limpiar completadas">✕ Limpias</button>
+          </div>
+        </div>
+
+        <ul id="task-list" role="list" aria-label="Lista de tareas" aria-live="polite">
+          <!-- Las tareas se renderizan aquí con JS -->
+        </ul>
+
+        <div id="empty-state" class="empty-state" aria-live="polite">
+          <div class="empty-icon">◎</div>
+          <p>Sin tareas. ¡Añade una para empezar!</p>
+        </div>
+      </section>
+
+      <!-- PANEL ESTADÍSTICAS -->
+      <aside class="stats-panel" aria-label="Estadísticas">
+        <h2>Estadísticas</h2>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span class="stat-number" id="stat-total">0</span>
+            <span class="stat-label">Total</span>
+          </div>
+          <div class="stat-card stat-card--done">
+            <span class="stat-number" id="stat-completed">0</span>
+            <span class="stat-label">Completadas</span>
+          </div>
+          <div class="stat-card stat-card--pending">
+            <span class="stat-number" id="stat-pending">0</span>
+            <span class="stat-label">Pendientes</span>
+          </div>
+        </div>
+
+        <div class="progress-wrap" aria-label="Progreso general">
+          <div class="progress-label">
+            <span>Progreso</span>
+            <span id="progress-pct">0%</span>
+          </div>
+          <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+        </div>
+
+        <div class="priority-breakdown">
+          <h3>Por prioridad</h3>
+          <div class="priority-row">
+            <span class="prio-dot prio-alta"></span>
+            <span>Alta</span>
+            <span id="stat-alta" class="prio-count">0</span>
+          </div>
+          <div class="priority-row">
+            <span class="prio-dot prio-normal"></span>
+            <span>Normal</span>
+            <span id="stat-normal" class="prio-count">0</span>
+          </div>
+          <div class="priority-row">
+            <span class="prio-dot prio-baja"></span>
+            <span>Baja</span>
+            <span id="stat-baja" class="prio-count">0</span>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </main>
+
+  <footer class="app-footer">
+    <p>TaskFlow · Bootcamp Project · <span id="footer-year"></span></p>
+  </footer>
+
+  <!-- Template oculto para cada tarea -->
+  <template id="task-template">
+    <li class="task-item" role="listitem">
+      <button class="task-check" aria-label="Marcar como completada"></button>
+      <div class="task-body">
+        <span class="task-title"></span>
+        <span class="task-meta"></span>
+      </div>
+      <span class="task-priority-badge"></span>
+      <div class="task-actions">
+        <button class="task-edit" aria-label="Editar tarea" title="Editar">✎</button>
+        <button class="task-delete" aria-label="Eliminar tarea" title="Eliminar">✕</button>
+      </div>
+    </li>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
