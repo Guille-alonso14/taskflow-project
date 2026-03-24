@@ -52,11 +52,13 @@ function loadDarkMode() {
 // LÓGICA DE TAREAS
 // ============================================================
 
+
 /**
- * Crea un objeto tarea con la estructura definida
- * @param {string} title
- * @param {string} priority
- * @returns {{ id:string, title:string, completed:boolean, createdAt:string, priority:string }}
+ * Crea un nuevo objeto tarea.
+ * 
+ * @param {string} title - El título de la tarea.
+ * @param {string} [priority='normal'] - Nivel de prioridad de la tarea.
+ * @returns {{ id: string, title: string, completed: boolean, createdAt: string, priority: string }} Objeto tarea.
  */
 function createTask(title, priority = 'normal') {
   return {
