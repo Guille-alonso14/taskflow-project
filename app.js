@@ -27,25 +27,36 @@ function formatDate(iso) {
 // ============================================================
 // LOCALSTORAGE
 // ============================================================
+const storage = {
+  get(key, fallback = null) {
+    try {
+      const raw = localStorage.getItem(key);
+      if (raw === null) return fallback;
+      return JSON.parse(raw);
+    } catch {
+      return fallback;
+    }
+  },
+
+  set(key, value) {
+    localStorage.setItem(key, JSON.stringify(value));
+  }
+};
+
 function saveTasks() {
-  localStorage.setItem('taskflow_tasks', JSON.stringify(tasks));
+  storage.set('taskflow_tasks', tasks);
 }
 
 function loadTasks() {
-  try {
-    const raw = localStorage.getItem('taskflow_tasks');
-    tasks = raw ? JSON.parse(raw) : [];
-  } catch {
-    tasks = [];
-  }
+  tasks = storage.get('taskflow_tasks', []);
 }
 
 function saveDarkMode(enabled) {
-  localStorage.setItem('taskflow_dark', enabled ? '1' : '0');
+  storage.set('taskflow_dark', Boolean(enabled));
 }
 
 function loadDarkMode() {
-  return localStorage.getItem('taskflow_dark') === '1';
+  return storage.get('taskflow_dark', false) === true;
 }
 
 // ============================================================
