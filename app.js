@@ -292,21 +292,34 @@ const taskInput   = document.getElementById('task-input');
 const prioritySel = document.getElementById('task-priority');
 const formError   = document.getElementById('form-error');
 
+function validateTaskTitle(title) {
+  if (!title) {
+    formError.textContent = '⚠ El título no puede estar vacío.';
+    taskInput.focus();
+    return false;
+  }
+
+  formError.textContent = '';
+  return true;
+}
+
+function handleAddTask(title, priority) {
+  addTask(title, priority);
+}
+
+function resetTaskForm() {
+  taskInput.value   = '';
+  prioritySel.value = 'normal';
+  taskInput.focus();
+}
+
 form.addEventListener('submit', e => {
   e.preventDefault();
   const title = taskInput.value.trim();
 
-  if (!title) {
-    formError.textContent = '⚠ El título no puede estar vacío.';
-    taskInput.focus();
-    return;
-  }
-
-  formError.textContent = '';
-  addTask(title, prioritySel.value);
-  taskInput.value    = '';
-  prioritySel.value  = 'normal';
-  taskInput.focus();
+  if (!validateTaskTitle(title)) return;
+  handleAddTask(title, prioritySel.value);
+  resetTaskForm();
 });
 
 // Delegación de eventos en la lista
