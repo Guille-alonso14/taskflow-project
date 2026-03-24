@@ -323,27 +323,41 @@ form.addEventListener('submit', e => {
 });
 
 // Delegación de eventos en la lista
+const taskClickActionSelectors = {
+  check:  '.task-check',
+  delete: '.task-delete',
+  edit:   '.task-edit'
+};
+
+const taskClickHandlers = {
+  check({ id }) {
+    toggleTask(id);
+  },
+
+  delete({ id, li }) {
+    // Animación antes de eliminar
+    li.classList.add('removing');
+    li.addEventListener('animationend', () => deleteTask(id), { once: true });
+  },
+
+  edit({ id, li }) {
+    startEdit(li, id);
+  }
+};
+
+function resolveTaskClickAction(target) {
+  return Object.entries(taskClickActionSelectors).find(([, selector]) => target.closest(selector))?.[0] || null;
+}
+
 taskList.addEventListener('click', e => {
   const li = e.target.closest('.task-item');
   if (!li) return;
   const id = li.dataset.id;
+  const action = resolveTaskClickAction(e.target);
+  if (!action) return;
 
-  if (e.target.closest('.task-check')) {
-    toggleTask(id);
-    return;
-  }
-
-  if (e.target.closest('.task-delete')) {
-    // Animación antes de eliminar
-    li.classList.add('removing');
-    li.addEventListener('animationend', () => deleteTask(id), { once: true });
-    return;
-  }
-
-  if (e.target.closest('.task-edit')) {
-    startEdit(li, id);
-    return;
-  }
+  const handler = taskClickHandlers[action];
+  if (handler) handler({ id, li, event: e });
 });
 
 // Teclado en la lista (accesibilidad)
