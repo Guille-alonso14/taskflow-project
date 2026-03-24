@@ -211,13 +211,23 @@ function renderTaskList() {
 }
 
 function renderStats() {
-  const total      = tasks.length;
-  const completed  = tasks.filter(t => t.completed).length;
-  const pending    = total - completed;
-  const pct        = total > 0 ? Math.round((completed / total) * 100) : 0;
+  const total = tasks.length;
+  const stats = tasks.reduce((acc, task) => {
+    if (task.completed) {
+      acc.completed += 1;
+    }
+
+    if (task.priority === 'alta')   acc.alta += 1;
+    if (task.priority === 'normal') acc.normal += 1;
+    if (task.priority === 'baja')   acc.baja += 1;
+
+    return acc;
+  }, { completed: 0, alta: 0, normal: 0, baja: 0 });
+  const pending = total - stats.completed;
+  const pct     = total > 0 ? Math.round((stats.completed / total) * 100) : 0;
 
   document.getElementById('stat-total').textContent     = total;
-  document.getElementById('stat-completed').textContent = completed;
+  document.getElementById('stat-completed').textContent = stats.completed;
   document.getElementById('stat-pending').textContent   = pending;
   document.getElementById('progress-pct').textContent   = pct + '%';
 
@@ -227,9 +237,9 @@ function renderStats() {
   const pb = document.querySelector('.progress-bar');
   pb.setAttribute('aria-valuenow', pct);
 
-  document.getElementById('stat-alta').textContent   = tasks.filter(t => t.priority === 'alta').length;
-  document.getElementById('stat-normal').textContent = tasks.filter(t => t.priority === 'normal').length;
-  document.getElementById('stat-baja').textContent   = tasks.filter(t => t.priority === 'baja').length;
+  document.getElementById('stat-alta').textContent   = stats.alta;
+  document.getElementById('stat-normal').textContent = stats.normal;
+  document.getElementById('stat-baja').textContent   = stats.baja;
 }
 
 function renderAll() {
