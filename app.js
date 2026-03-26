@@ -69,7 +69,7 @@ function loadDarkMode() {
  * 
  * @param {string} title - El título de la tarea.
  * @param {string} [priority='normal'] - Nivel de prioridad de la tarea.
- * @returns {{ id: string, title: string, completed: boolean, createdAt: string, priority: string }} Objeto tarea.
+ * @returns {{ id: string, title: string, completed: boolean, createdAt: string, completedAt: (string|null), priority: string }} Objeto tarea.
  */
 function createTask(title, priority = 'normal') {
   return {
@@ -77,8 +77,15 @@ function createTask(title, priority = 'normal') {
     title:     title.trim(),
     completed: false,
     createdAt: new Date().toISOString(),
+    completedAt: null,
     priority,
   };
+}
+
+function isSameLocalDay(a, b) {
+  return a.getFullYear() === b.getFullYear()
+    && a.getMonth() === b.getMonth()
+    && a.getDate() === b.getDate();
 }
 
 function addTask(title, priority) {
@@ -99,6 +106,7 @@ function toggleTask(id) {
   const task = tasks.find(t => t.id === id);
   if (task) {
     task.completed = !task.completed;
+    task.completedAt = task.completed ? new Date().toISOString() : null;
     saveTasks();
     renderAll();
   }
@@ -116,7 +124,10 @@ function editTask(id, newTitle) {
 function completeAll() {
   const filtered = getFilteredTasks();
   const allDone  = filtered.every(t => t.completed);
-  filtered.forEach(t => { t.completed = !allDone; });
+  filtered.forEach(t => {
+    t.completed = !allDone;
+    t.completedAt = t.completed ? new Date().toISOString() : null;
+  });
   saveTasks();
   renderAll();
 }
@@ -212,9 +223,17 @@ function renderTaskList() {
 
 function renderStats() {
   const total = tasks.length;
+  const today = new Date();
   const stats = tasks.reduce((acc, task) => {
     if (task.completed) {
       acc.completed += 1;
+    }
+
+    if (task.completed && task.completedAt) {
+      const completedAt = new Date(task.completedAt);
+      if (!Number.isNaN(completedAt.valueOf()) && isSameLocalDay(completedAt, today)) {
+        acc.completedToday += 1;
+      }
     }
 
     if (task.priority === 'alta')   acc.alta += 1;
@@ -222,12 +241,13 @@ function renderStats() {
     if (task.priority === 'baja')   acc.baja += 1;
 
     return acc;
-  }, { completed: 0, alta: 0, normal: 0, baja: 0 });
+  }, { completed: 0, completedToday: 0, alta: 0, normal: 0, baja: 0 });
   const pending = total - stats.completed;
   const pct     = total > 0 ? Math.round((stats.completed / total) * 100) : 0;
 
   document.getElementById('stat-total').textContent     = total;
   document.getElementById('stat-completed').textContent = stats.completed;
+  document.getElementById('stat-completed-today').textContent = stats.completedToday;
   document.getElementById('stat-pending').textContent   = pending;
   document.getElementById('progress-pct').textContent   = pct + '%';
 

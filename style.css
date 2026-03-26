@@ -541,7 +541,7 @@ select { cursor: pointer; appearance: none; background-image: url("data:image/sv
 
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: var(--sp-sm);
   margin-bottom: var(--sp-lg);
 }
