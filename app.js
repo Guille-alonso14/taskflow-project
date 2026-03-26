@@ -291,6 +291,14 @@ const form        = document.getElementById('task-form');
 const taskInput   = document.getElementById('task-input');
 const prioritySel = document.getElementById('task-priority');
 const formError   = document.getElementById('form-error');
+const taskTitleCounter = document.getElementById('task-title-counter');
+const TASK_TITLE_MAX = 200;
+
+function updateTaskTitleCounter() {
+  if (!taskTitleCounter) return;
+  const remaining = Math.max(0, TASK_TITLE_MAX - taskInput.value.length);
+  taskTitleCounter.textContent = `Quedan ${remaining} caracteres`;
+}
 
 function validateTaskTitle(title) {
   if (!title) {
@@ -310,8 +318,11 @@ function handleAddTask(title, priority) {
 function resetTaskForm() {
   taskInput.value   = '';
   prioritySel.value = 'normal';
+  updateTaskTitleCounter();
   taskInput.focus();
 }
+
+taskInput.addEventListener('input', updateTaskTitleCounter);
 
 form.addEventListener('submit', e => {
   e.preventDefault();
@@ -429,6 +440,9 @@ function init() {
   // Tareas
   loadTasks();
   renderAll();
+
+  // Contador de caracteres del formulario
+  updateTaskTitleCounter();
 
   // Año en footer
   document.getElementById('footer-year').textContent = new Date().getFullYear();
