@@ -70,15 +70,17 @@ function loadDarkMode() {
  * 
  * @param {string} title - El título de la tarea.
  * @param {string} [priority='normal'] - Nivel de prioridad de la tarea.
- * @returns {{ id: string, title: string, completed: boolean, createdAt: string, completedAt: (string|null), priority: string }} Objeto tarea.
+ * @param {string|null} [dueDate=null] - Fecha límite opcional (YYYY-MM-DD).
+ * @returns {{ id: string, title: string, completed: boolean, createdAt: string, completedAt: (string|null), dueDate: (string|null), priority: string }} Objeto tarea.
  */
-function createTask(title, priority = 'normal') {
+function createTask(title, priority = 'normal', dueDate = null) {
   return {
     id:        generateId(),
     title:     title.trim(),
     completed: false,
     createdAt: new Date().toISOString(),
     completedAt: null,
+    dueDate: dueDate || null,
     priority,
   };
 }
@@ -89,8 +91,8 @@ function isSameLocalDay(a, b) {
     && a.getDate() === b.getDate();
 }
 
-function addTask(title, priority) {
-  const task = createTask(title, priority);
+function addTask(title, priority, dueDate = null) {
+  const task = createTask(title, priority, dueDate);
   tasks.unshift(task);
   saveTasks();
   renderAll();
@@ -200,7 +202,10 @@ function renderTaskItem(task) {
   li.querySelector('.task-title').textContent = task.title;
 
   // Meta
-  li.querySelector('.task-meta').textContent = formatDate(task.createdAt);
+  const dueDateText = task.dueDate
+    ? ` · Límite: ${new Date(task.dueDate + 'T00:00:00').toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })}`
+    : '';
+  li.querySelector('.task-meta').textContent = `${formatDate(task.createdAt)}${dueDateText}`;
 
   // Badge prioridad
   const badge = li.querySelector('.task-priority-badge');
@@ -325,6 +330,7 @@ function startEdit(li, taskId) {
 const form        = document.getElementById('task-form');
 const taskInput   = document.getElementById('task-input');
 const prioritySel = document.getElementById('task-priority');
+const dueDateInput = document.getElementById('task-due-date');
 const formError   = document.getElementById('form-error');
 const taskTitleCounter = document.getElementById('task-title-counter');
 const TASK_TITLE_MAX = 200;
@@ -346,13 +352,14 @@ function validateTaskTitle(title) {
   return true;
 }
 
-function handleAddTask(title, priority) {
-  addTask(title, priority);
+function handleAddTask(title, priority, dueDate) {
+  addTask(title, priority, dueDate);
 }
 
 function resetTaskForm() {
   taskInput.value   = '';
   prioritySel.value = 'normal';
+  dueDateInput.value = '';
   updateTaskTitleCounter();
   taskInput.focus();
 }
@@ -364,7 +371,7 @@ form.addEventListener('submit', e => {
   const title = taskInput.value.trim();
 
   if (!validateTaskTitle(title)) return;
-  handleAddTask(title, prioritySel.value);
+  handleAddTask(title, prioritySel.value, dueDateInput.value || null);
   resetTaskForm();
 });
 
