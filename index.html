@@ -61,24 +61,29 @@
       </form>
     </section>
 
-    <!-- CONTROLES DE FILTRO Y BÚSQUEDA -->
-    <section class="controls-section" aria-label="Filtros y búsqueda">
-      <div class="search-wrap">
-        <label for="search-input" class="sr-only">Buscar tareas</label>
-        <input
-          type="search"
-          id="search-input"
-          placeholder="🔍 Buscar tareas..."
-          aria-label="Buscar tareas"
-        />
-      </div>
-      <div class="filters" role="group" aria-label="Filtrar tareas">
-        <button class="filter-btn active" data-filter="todas" aria-pressed="true">Todas</button>
-        <button class="filter-btn" data-filter="pendientes" aria-pressed="false">Pendientes</button>
-        <button class="filter-btn" data-filter="completadas" aria-pressed="false">Completadas</button>
-      </div>
-    </section>
-
+  <!-- CONTROLES DE FILTRO Y BÚSQUEDA -->
+<section class="controls-section" aria-label="Filtros y búsqueda">
+  <div class="search-wrap">
+    <label for="search-input" class="sr-only">Buscar tareas</label>
+    <input
+      type="search"
+      id="search-input"
+      placeholder="🔍 Buscar tareas..."
+      aria-label="Buscar tareas"
+    />
+  </div>
+  <select id="sort-select" aria-label="Ordenar tareas">
+    <option value="default">Por defecto</option>
+    <option value="date">Por fecha</option>
+    <option value="priority">Por prioridad</option>
+    <option value="title">Por título</option>
+  </select>
+  <div class="filters" role="group" aria-label="Filtrar tareas">
+    <button class="filter-btn active" data-filter="todas" aria-pressed="true">Todas</button>
+    <button class="filter-btn" data-filter="pendientes" aria-pressed="false">Pendientes</button>
+    <button class="filter-btn" data-filter="completadas" aria-pressed="false">Completadas</button>
+  </div>
+</section>
     <div class="content-grid">
 
       <!-- LISTA DE TAREAS -->

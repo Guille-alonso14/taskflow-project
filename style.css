@@ -158,7 +158,7 @@ body.dark .icon-sun       { display: none; }
   display: flex;
   gap: var(--sp-md);
   align-items: flex-end;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
 .input-wrap {
@@ -241,6 +241,7 @@ select { cursor: pointer; appearance: none; background-image: url("data:image/sv
   align-items: center;
   flex-wrap: wrap;
   margin-bottom: var(--sp-lg);
+  justify-content: space-between;
 }
 
 .search-wrap { flex: 1; min-width: 180px; }

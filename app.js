@@ -11,6 +11,7 @@
 let tasks        = [];
 let currentFilter = 'todas';
 let searchQuery  = '';
+let currentSort  = 'default';
 
 // ============================================================
 // HELPERS
@@ -150,6 +151,20 @@ function getFilteredTasks() {
   if (searchQuery.trim()) {
     const q = searchQuery.toLowerCase();
     result = result.filter(t => t.title.toLowerCase().includes(q));
+  }
+
+  const priorityRank = { alta: 0, normal: 1, baja: 2 };
+
+  if (currentSort === 'date') {
+    return [...result].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  }
+
+  if (currentSort === 'priority') {
+    return [...result].sort((a, b) => (priorityRank[a.priority] ?? 99) - (priorityRank[b.priority] ?? 99));
+  }
+
+  if (currentSort === 'title') {
+    return [...result].sort((a, b) => a.title.localeCompare(b.title, 'es', { sensitivity: 'base' }));
   }
 
   return result;
@@ -420,6 +435,12 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
 // Búsqueda
 document.getElementById('search-input').addEventListener('input', e => {
   searchQuery = e.target.value;
+  renderTaskList();
+});
+
+// Ordenación
+document.getElementById('sort-select').addEventListener('change', e => {
+  currentSort = e.target.value;
   renderTaskList();
 });
 
