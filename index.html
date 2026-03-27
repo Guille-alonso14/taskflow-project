@@ -30,40 +30,40 @@
 
     <!-- FORMULARIO -->
     <section class="form-section" aria-label="Añadir nueva tarea">
-      <form id="task-form" novalidate>
-        <div class="form-row">
-          <div class="input-wrap">
-            <label for="task-input">Nueva tarea</label>
-            <input
-              type="text"
-              id="task-input"
-              name="task-title"
-              placeholder="Escribe una tarea..."
-              autocomplete="off"
-              maxlength="200"
-              aria-required="true"
-            />
-            <p id="task-title-counter" class="char-counter" aria-live="polite">Quedan 200 caracteres</p>
-          </div>
-          <div class="input-wrap input-wrap--select">
-            <label for="task-priority">Prioridad</label>
-            <select id="task-priority" name="task-priority">
-              <option value="normal">Normal</option>
-              <option value="alta">Alta ↑</option>
-              <option value="baja">Baja ↓</option>
-            </select>
-          </div>
-          <div class="input-wrap input-wrap--select">
-            <label for="task-due-date">Fecha límite (opcional)</label>
-            <input type="date" id="task-due-date" name="task-due-date" />
-          </div>
-          <button type="submit" id="btn-add" aria-label="Añadir tarea">
-            <span>+ Añadir</span>
-          </button>
-        </div>
-        <p class="form-error" id="form-error" role="alert" aria-live="polite"></p>
-      </form>
-    </section>
+  <form id="task-form" novalidate>
+    <div class="form-row">
+      <div class="input-wrap">
+        <label for="task-input">Nueva tarea</label>
+        <input
+          type="text"
+          id="task-input"
+          name="task-title"
+          placeholder="Escribe una tarea..."
+          autocomplete="off"
+          maxlength="200"
+          aria-required="true"
+        />
+      </div>
+      <div class="input-wrap input-wrap--select">
+        <label for="task-priority">Prioridad</label>
+        <select id="task-priority" name="task-priority">
+          <option value="normal">Normal</option>
+          <option value="alta">Alta ↑</option>
+          <option value="baja">Baja ↓</option>
+        </select>
+      </div>
+      <div class="input-wrap input-wrap--select">
+        <label for="task-due-date">Fecha límite (opcional)</label>
+        <input type="date" id="task-due-date" name="task-due-date" />
+      </div>
+      <button type="submit" id="btn-add" aria-label="Añadir tarea">
+        <span>+ Añadir</span>
+      </button>
+    </div>
+    <p id="task-title-counter" class="char-counter" aria-live="polite">Quedan 200 caracteres</p>
+    <p class="form-error" id="form-error" role="alert" aria-live="polite"></p>
+  </form>
+</section>
 
   <!-- CONTROLES DE FILTRO Y BÚSQUEDA -->
 <section class="controls-section" aria-label="Filtros y búsqueda">
