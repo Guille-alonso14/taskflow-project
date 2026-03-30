@@ -12,3 +12,7 @@ desktop.ini
 .idea/
 *.swp
 *~
+
+# Backend
+server/.env
+server/node_modules/
