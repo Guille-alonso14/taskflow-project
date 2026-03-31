@@ -4,7 +4,7 @@
  */
 
 'use strict';
-
+import { getTasks, createTask, eliminarTarea } from './api/client.js';
 // ============================================================
 // ESTADO DE LA APP
 // ============================================================
@@ -28,36 +28,13 @@ function formatDate(iso) {
 // ============================================================
 // LOCALSTORAGE
 // ============================================================
-const storage = {
-  get(key, fallback = null) {
-    try {
-      const raw = localStorage.getItem(key);
-      if (raw === null) return fallback;
-      return JSON.parse(raw);
-    } catch {
-      return fallback;
-    }
-  },
-
-  set(key, value) {
-    localStorage.setItem(key, JSON.stringify(value));
-  }
-};
-
-function saveTasks() {
-  storage.set('taskflow_tasks', tasks);
-}
-
-function loadTasks() {
-  tasks = storage.get('taskflow_tasks', []);
-}
-
+// Dark mode con localStorage (se mantiene en cliente)
 function saveDarkMode(enabled) {
-  storage.set('taskflow_dark', Boolean(enabled));
+  localStorage.setItem('taskflow_dark', enabled ? '1' : '0');
 }
 
 function loadDarkMode() {
-  return storage.get('taskflow_dark', false) === true;
+  return localStorage.getItem('taskflow_dark') === '1';
 }
 
 // ============================================================
@@ -65,25 +42,6 @@ function loadDarkMode() {
 // ============================================================
 
 
-/**
- * Crea un nuevo objeto tarea.
- * 
- * @param {string} title - El título de la tarea.
- * @param {string} [priority='normal'] - Nivel de prioridad de la tarea.
- * @param {string|null} [dueDate=null] - Fecha límite opcional (YYYY-MM-DD).
- * @returns {{ id: string, title: string, completed: boolean, createdAt: string, completedAt: (string|null), dueDate: (string|null), priority: string }} Objeto tarea.
- */
-function createTask(title, priority = 'normal', dueDate = null) {
-  return {
-    id:        generateId(),
-    title:     title.trim(),
-    completed: false,
-    createdAt: new Date().toISOString(),
-    completedAt: null,
-    dueDate: dueDate || null,
-    priority,
-  };
-}
 
 function isSameLocalDay(a, b) {
   return a.getFullYear() === b.getFullYear()
@@ -91,18 +49,25 @@ function isSameLocalDay(a, b) {
     && a.getDate() === b.getDate();
 }
 
-function addTask(title, priority, dueDate = null) {
-  const task = createTask(title, priority, dueDate);
-  tasks.unshift(task);
-  saveTasks();
-  renderAll();
-  return task;
+async function addTask(title, priority, dueDate = null) {
+  try {
+    const task = await createTask(title, priority, dueDate);
+    tasks.unshift(task);
+    renderAll();
+    return task;
+  } catch (err) {
+    formError.textContent = err.message;
+  }
 }
 
-function deleteTask(id) {
-  tasks = tasks.filter(t => t.id !== id);
-  saveTasks();
-  renderAll();
+async function deleteTask(id) {
+  try {
+    await eliminarTarea(id);
+    tasks = tasks.filter(t => t.id !== id);
+    renderAll();
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 function toggleTask(id) {
@@ -352,8 +317,8 @@ function validateTaskTitle(title) {
   return true;
 }
 
-function handleAddTask(title, priority, dueDate) {
-  addTask(title, priority, dueDate);
+async function handleAddTask(title, priority, dueDate) {
+  await addTask(title, priority, dueDate);
 }
 
 function resetTaskForm() {
@@ -366,12 +331,12 @@ function resetTaskForm() {
 
 taskInput.addEventListener('input', updateTaskTitleCounter);
 
-form.addEventListener('submit', e => {
+form.addEventListener('submit', async e => {
   e.preventDefault();
   const title = taskInput.value.trim();
 
   if (!validateTaskTitle(title)) return;
-  handleAddTask(title, prioritySel.value, dueDateInput.value || null);
+  await handleAddTask(title, prioritySel.value, dueDateInput.value || null);
   resetTaskForm();
 });
 
@@ -479,14 +444,20 @@ btnDark.addEventListener('click', () => {
 // ============================================================
 // INIT
 // ============================================================
-function init() {
+async function init() {
   // Dark mode
   if (loadDarkMode()) {
     applyDarkMode(true);
   }
 
-  // Tareas
-  loadTasks();
+  // Cargar tareas desde el backend
+  try {
+    tasks = await getTasks();
+  } catch (err) {
+    console.error('Error al cargar tareas:', err);
+    tasks = [];
+  }
+
   renderAll();
 
   // Contador de caracteres del formulario
