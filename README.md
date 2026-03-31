@@ -127,3 +127,37 @@ Tu preferencia se guarda automáticamente.
 | Eliminar tareas | ✅ Animación correcta |
 | Recargar página | ✅ Datos persisten |
 | Navegación por teclado | ✅ Totalmente accesible |
+
+## 🏗️ Arquitectura Backend
+
+El backend está construido con Node.js y Express siguiendo
+una arquitectura por capas estricta:
+```
+server/
+├── src/
+│   ├── config/
+│   │   └── env.js          # Variables de entorno
+│   ├── controllers/
+│   │   └── task.controller.js  # Lógica de red
+│   ├── routes/
+│   │   └── task.routes.js  # Enrutamiento
+│   └── services/
+│       └── task.service.js # Lógica de negocio
+└── index.js                # Punto de entrada
+```
+
+## 🔌 API REST
+
+| Método | URL | Descripción | Código |
+|--------|-----|-------------|--------|
+| GET | /api/v1/tasks | Obtener tareas | 200 |
+| POST | /api/v1/tasks | Crear tarea | 201 |
+| DELETE | /api/v1/tasks/:id | Eliminar tarea | 204 |
+
+## ▶️ Cómo ejecutar el backend
+```bash
+cd server
+npm run dev
+```
+
+El servidor arranca en http://localhost:3000
