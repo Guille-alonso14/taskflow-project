@@ -6,7 +6,9 @@ const taskRoutes = require('./routes/task.routes');
 const app = express();
 
 // Middlewares globales
-app.use(cors());
+app.use(cors({
+  origin: 'https://taskflow-project-steel.vercel.app'
+}));
 app.use(express.json());
 
 // Logger de peticiones
