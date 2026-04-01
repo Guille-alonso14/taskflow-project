@@ -99,7 +99,15 @@
             <button id="btn-clear-completed" aria-label="Borrar tareas completadas" title="Limpiar completadas">✕ Limpias</button>
           </div>
         </div>
+<div id="loading-state" class="loading-state" aria-live="polite">
+  <div class="loading-spinner"></div>
+  <p>Cargando tareas...</p>
+</div>
 
+<div id="error-state" class="error-state" aria-live="polite" style="display:none">
+  <p>⚠️ Error al conectar con el servidor. Comprueba que está corriendo.</p>
+  <button id="btn-retry">Reintentar</button>
+</div>
         <ul id="task-list" role="list" aria-label="Lista de tareas" aria-live="polite">
           <!-- Las tareas se renderizan aquí con JS -->
         </ul>

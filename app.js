@@ -450,13 +450,39 @@ async function init() {
     applyDarkMode(true);
   }
 
+  // Referencias a estados de carga y error
+  const loadingState = document.getElementById('loading-state');
+  const errorState   = document.getElementById('error-state');
+  const btnRetry     = document.getElementById('btn-retry');
+
+  // Mostrar carga
+  loadingState.style.display = 'flex';
+  errorState.style.display   = 'none';
+
   // Cargar tareas desde el backend
   try {
     tasks = await getTasks();
+    loadingState.style.display = 'none';
   } catch (err) {
     console.error('Error al cargar tareas:', err);
+    loadingState.style.display = 'none';
+    errorState.style.display   = 'flex';
     tasks = [];
   }
+
+  // Botón reintentar
+  btnRetry.addEventListener('click', async () => {
+    errorState.style.display   = 'none';
+    loadingState.style.display = 'flex';
+    try {
+      tasks = await getTasks();
+      loadingState.style.display = 'none';
+      renderAll();
+    } catch (err) {
+      loadingState.style.display = 'none';
+      errorState.style.display   = 'flex';
+    }
+  });
 
   renderAll();
 
@@ -466,5 +492,13 @@ async function init() {
   // Año en footer
   document.getElementById('footer-year').textContent = new Date().getFullYear();
 }
+
+init();
+  // Contador de caracteres del formulario
+  updateTaskTitleCounter();
+
+  // Año en footer
+  document.getElementById('footer-year').textContent = new Date().getFullYear();
+
 
 init();
