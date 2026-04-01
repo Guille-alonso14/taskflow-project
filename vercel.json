@@ -8,12 +8,20 @@
     {
       "src": "*.{html,css,js,jpg,png,svg}",
       "use": "@vercel/static"
+    },
+    {
+      "src": "api/*.js",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
+      "src": "/api/v1/(.*)",
       "dest": "server/src/index.js"
+    },
+    {
+      "src": "/api/client.js",
+      "dest": "/api/client.js"
     },
     {
       "src": "/(.*)",
